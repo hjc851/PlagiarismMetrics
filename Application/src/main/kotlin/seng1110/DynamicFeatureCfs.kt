@@ -35,6 +35,7 @@ fun main() {
 
     println("Normalizing features")
     val normalizeFilter = Normalize().apply {
+        scale = 100.0
         setInputFormat(data)
     }
 
@@ -134,6 +135,13 @@ fun main() {
     println("\t${test.numAttributes()} Features")
     println("\t${test.numInstances()} of ${data.numInstances()} Instances")
     println("\t${clusterer.javaClass.simpleName} Clusterer")
+    println("** Features")
+    for (i in 0 until test.numAttributes()) {
+        val attr = test.attribute(i)
+        println(attr.name())
+    }
+    println()
+
 //    println("\tTraining Set BASE ${TRAIN_LEVELS.joinToString(" ")}")
 
 //    println("** Counts")
