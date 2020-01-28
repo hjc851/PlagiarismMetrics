@@ -1,0 +1,164 @@
+package pmetrics.tokens
+
+data class Token (
+    val type: TokenType,
+    val lexeme: String
+)
+
+enum class TokenType {
+    PACKAGE,
+
+    IMPORT,
+    ASTERIX,
+
+    NAME,
+
+    DEFAULT,
+    PUBLIC,
+    PROTECTED,
+    PRIVATE,
+    ABSTRACT,
+    STATIC,
+    FINAL,
+    TRANSIENT,
+    VOLATILE,
+    SYNCHRONIZED,
+    NATIVE,
+    STRICTFP,
+    TRANSITIVE,
+
+    ANNOTATION,
+    ENUM,
+    CLASS,
+    INTERFACE,
+
+    FIELD,
+    VARIABLE,
+    CONSTRUCTOR,
+    METHOD,
+
+    EXTENDS,
+    IMPLEMENTS,
+
+    CONTINUE,
+    BREAK,
+    RETURN,
+    ASSERT,
+
+    GENERICS_START,
+    GENERICS_END,
+
+    TYPEBODY_START,
+    TYPEBODY_END,
+    CONSTRUCTOR_START,
+    CONSTRUCTOR_END,
+    METHOD_START,
+    METHOD_END,
+
+    PARAMETER,
+    PARAMETERS_START,
+    PARAMETERS_END,
+    VARARG,
+
+    DOT,
+    COLON,
+    NEW,
+    INSTANCEOF,
+    ARROW,
+
+    CAST_START,
+    CAST_END,
+
+    ASSIGNMENT,
+
+    OR,
+    AND,
+    BINARY_OR,
+    BINARY_AND,
+    XOR,
+    EQUALS,
+    NOT_EQUALS,
+    LESS,
+    GREATER,
+    LESS_EQUALS,
+    GREATER_EQUALS,
+    LEFT_SHIFT,
+    SIGNED_RIGHT_SHIFT,
+    UNSIGNED_RIGHT_SHIFT,
+    PLUS,
+    MINUS,
+    TIMES,
+    DIVIDE,
+    REMAINDER,
+    NOT,
+    BNOT,
+    COMPLEMENT,
+    INCREMENT,
+    DECREMENT,
+
+    STRING,
+    CHAR,
+    NUMBER,
+    TRUE,
+    FALSE,
+    NULL,
+
+    ANNOTATIONMARKER,
+
+    ARGUMENTS_START,
+    ARGUMENTS_END,
+
+    FOR,
+    WHILE,
+    DOWHILE,
+    FOREACH,
+
+    LOOPBODY_START,
+    LOOPBODY_END,
+
+    QUESTION,
+
+    CONDITION_START,
+    CONDITION_END,
+    LOOPPARAM_START,
+    LOOPPARAM_END,
+
+    IF,
+    ELSE,
+    SWITCH,
+    CASE,
+    CONDBODY_START,
+    CONDBODY_END,
+
+    BLOCK_START,
+    BLOCK_END,
+
+    ARR_INDEX_L,
+    ARR_INDEX_R,
+
+    ARR_DIMENTION,
+
+    TRY,
+    CATCH,
+    FINALLY,
+    THROW,
+
+    THROWS,
+    THROWS_START,
+    THROWS_END,
+
+    TRYRESOURCE_START,
+    TRYRESOURCE_END,
+    TRYBODY_START,
+    TRYBODY_END,
+    CATCHBODY_START,
+    CATCHBODY_END,
+
+    ARRAYINIT_START,
+    ARRAYINIT_END,
+
+    UNKNOWN,
+
+    THIS,
+    SUPER
+}
