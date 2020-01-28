@@ -27,9 +27,7 @@ fun main() {
     val classes = data.map { it.stringValue(it.classIndex()) }
 
     println("Splitting data into test & train")
-//    var train = InstanceFilter.filterByLevel(data, 10)
-    var train =
-        InstanceFilter.filter(data, Predicate { random.nextBoolean() })
+    var train = InstanceFilter.filter(data, Predicate { random.nextBoolean() })
     val trainIds = train.map { it.stringValue(0) }
     val trainClasses = train.map { it.stringValue(it.classIndex()) }
 
@@ -39,6 +37,7 @@ fun main() {
 
     println("Normalizing features")
     val normalizeFilter = Normalize().apply {
+        scale = 100.0
         setInputFormat(data)
     }
 
@@ -75,10 +74,12 @@ fun main() {
     test.setClassIndex(-1)
 
     println("Performing PCA")
-    val pca = PrincipalComponents()
     val pcaSelection = performSelection(
         train,
-        pca,
+        PrincipalComponents().apply {
+            centerData = true
+            maximumAttributeNames = -1
+        },
         Ranker().apply {
             threshold = 0.0
         }
@@ -91,8 +92,12 @@ fun main() {
     val clusterer = SimpleKMeans()
 //    val clusterer = HierarchicalClusterer()
 //    val clusterer = EM()
-    clusterer.numClusters = test.numInstances()
-    clusterer.buildClusterer(train)
+
+    clusterer.numClusters = test.numInstances()-1
+    clusterer.buildClusterer(test)
+
+//    clusterer.numClusters = test.numInstances()
+//    clusterer.buildClusterer(train)
 
     println("Cluster Evaluation")
     val eval = ClusterEvaluation()

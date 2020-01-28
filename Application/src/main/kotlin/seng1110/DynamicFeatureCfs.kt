@@ -54,6 +54,7 @@ fun main() {
 
     println("\tRetained ${infoSelection.numberAttributesSelected()} features")
 
+    data = infoSelection.reduceDimensionality(data)
     train = infoSelection.reduceDimensionality(train)
     test = infoSelection.reduceDimensionality(test)
 
@@ -70,6 +71,7 @@ fun main() {
 
     println("\tRetained ${cfsEval.numberAttributesSelected()} features")
 
+    data = cfsEval.reduceDimensionality(data)
     train = cfsEval.reduceDimensionality(train)
     test = cfsEval.reduceDimensionality(test)
 
@@ -82,6 +84,7 @@ fun main() {
             setInputFormat(train)
         }
 
+        data = Filter.useFilter(data, removeIdFilter)
         train = Filter.useFilter(train, removeIdFilter)
         test = Filter.useFilter(test, removeIdFilter)
     }
@@ -94,10 +97,12 @@ fun main() {
             setInputFormat(train)
         }
 
+        data = Filter.useFilter(data, removeClsFilter)
         train = Filter.useFilter(train, removeClsFilter)
         test = Filter.useFilter(test, removeClsFilter)
     }
 
+    data.setClassIndex(-1)
     train.setClassIndex(-1)
     test.setClassIndex(-1)
 
@@ -105,20 +110,24 @@ fun main() {
     val clusterer = SimpleKMeans()
 //    val clusterer = HierarchicalClusterer()
 //    val clusterer = EM()
-    clusterer.numClusters = test.numInstances()
-    clusterer.buildClusterer(train)
+
+    clusterer.numClusters = data.numInstances()-1
+    clusterer.buildClusterer(data)
+
+//    clusterer.numClusters = test.numInstances()
+//    clusterer.buildClusterer(train)
 
     println("Cluster Evaluation")
     val eval = ClusterEvaluation()
     eval.setClusterer(clusterer)
-    eval.evaluateClusterer(test)
+    eval.evaluateClusterer(data)
 
     println(eval.clusterResultsToString())
 
     println("**** Clusters ****")
     eval.clusterAssignments
         .mapIndexed { index, assignment ->
-            testIds[index] to assignment
+            ids[index] to assignment
         }
         .groupBy { it.second }
         .forEach { (assignment, instances) ->
@@ -132,12 +141,12 @@ fun main() {
     println()
     println("**** Statistics - Dynamic Simulated Plagiarism ****")
     println("** Config")
-    println("\t${test.numAttributes()} Features")
-    println("\t${test.numInstances()} of ${data.numInstances()} Instances")
+    println("\t${data.numAttributes()} Features")
+    println("\t${data.numInstances()} of ${data.numInstances()} Instances")
     println("\t${clusterer.javaClass.simpleName} Clusterer")
     println("** Features")
-    for (i in 0 until test.numAttributes()) {
-        val attr = test.attribute(i)
+    for (i in 0 until data.numAttributes()) {
+        val attr = data.attribute(i)
         println(attr.name())
     }
     println()
@@ -145,14 +154,14 @@ fun main() {
 //    println("\tTraining Set BASE ${TRAIN_LEVELS.joinToString(" ")}")
 
 //    println("** Counts")
-    val groups = testIds.groupBy { it.split("-").first() }
+    val groups = ids.groupBy { it.split("-").first() }
 //    for ((base, members) in groups.toList().sortedBy { it.first }) {
 //        println("Base ${base} - ${members.size}")
 //    }
 //    println()
 
     val clusters = eval.clusterAssignments
-        .mapIndexed { index, assignment -> testIds[index] to assignment }
+        .mapIndexed { index, assignment -> ids[index] to assignment }
         .groupBy { it.second }
 
     val bases = setOf("P1", "P2", "P3", "P4", "P5")
