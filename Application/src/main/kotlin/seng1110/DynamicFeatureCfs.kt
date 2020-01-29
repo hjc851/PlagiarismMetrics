@@ -10,21 +10,22 @@ import weka.clusterers.SimpleKMeans
 import weka.filters.Filter
 import weka.filters.unsupervised.attribute.Normalize
 import weka.filters.unsupervised.attribute.Remove
+import java.nio.channels.FileChannel
 import java.nio.file.Paths
 import java.util.*
 import java.util.function.Predicate
 
 private val random = Random(11121993)
+//private val random = Random()
 
 fun main() {
     println("Loading data")
-    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017/features-average-graph.arff")
+    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-average-graph.arff")
     var data = ArffUtil.load(dataPath)
     val ids = data.map { it.stringValue(0) }
     val classes = data.map { it.stringValue(it.classIndex()) }
 
     println("Splitting data into test & train")
-//    var train = InstanceFilter.filterByLevel(data, 10)
     var train = InstanceFilter.filter(data, Predicate { random.nextBoolean() })
     val trainIds = train.map { it.stringValue(0) }
     val trainClasses = train.map { it.stringValue(it.classIndex()) }
@@ -35,7 +36,6 @@ fun main() {
 
     println("Normalizing features")
     val normalizeFilter = Normalize().apply {
-        scale = 100.0
         setInputFormat(data)
     }
 
@@ -107,11 +107,11 @@ fun main() {
     test.setClassIndex(-1)
 
     println("Performing clustering")
-    val clusterer = SimpleKMeans()
-//    val clusterer = HierarchicalClusterer()
+//    val clusterer = SimpleKMeans()
+    val clusterer = HierarchicalClusterer()
 //    val clusterer = EM()
 
-    clusterer.numClusters = data.numInstances()-1
+    clusterer.numClusters = data.numInstances()-15
     clusterer.buildClusterer(data)
 
 //    clusterer.numClusters = test.numInstances()
@@ -151,47 +151,19 @@ fun main() {
     }
     println()
 
-//    println("\tTraining Set BASE ${TRAIN_LEVELS.joinToString(" ")}")
-
-//    println("** Counts")
-    val groups = ids.groupBy { it.split("-").first() }
-//    for ((base, members) in groups.toList().sortedBy { it.first }) {
-//        println("Base ${base} - ${members.size}")
-//    }
-//    println()
-
     val clusters = eval.clusterAssignments
         .mapIndexed { index, assignment -> ids[index] to assignment }
         .groupBy { it.second }
-
-    val bases = setOf("P1", "P2", "P3", "P4", "P5")
 
     println("** Cluster Compositions")
     clusters.keys.sorted().forEach { cluster ->
         val elements = clusters.getValue(cluster)
             .map { it.first }
 
-        val consistency = elements.groupBy { it.split("-").first() }
-            .toList()
-            .sortedBy { it.first }
-
         println("Cluster $cluster - ${elements.size}")
 
-        for ((base, members) in consistency) {
-            val ofCluster = members.size.toDouble().div(elements.size)*100
-            val ofType = members.size.toDouble().div(groups.getValue(base).size)*100
-
-            println("\t$base - ${String.format("%d\n\t\t%05.2f of cluster\n\t\t%05.2f of type", members.size, ofCluster, ofType)}")
-
-            val baseEntries = members.filter { bases.contains(it.split("-").dropLast(1).joinToString("-")) }
-                .sorted()
-                .groupBy { it.split("-").first() }
-
-            baseEntries[base]?.let {
-                it.forEach {
-                    println("\t\tContains base ${it}")
-                }
-            }
+        for (element in elements) {
+            println("\t${element}")
         }
 
         println()
