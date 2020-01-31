@@ -25,6 +25,8 @@ fun main() {
     val ids = data.map { it.stringValue(0) }
     val classes = data.map { it.stringValue(it.classIndex()) }
 
+    println("\t${data.numAttributes()} attributes")
+
     println("Splitting data into test & train")
     var train = InstanceFilter.filter(data, Predicate { random.nextBoolean() })
     val trainIds = train.map { it.stringValue(0) }
