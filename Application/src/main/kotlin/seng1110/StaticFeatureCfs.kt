@@ -5,24 +5,26 @@ import InstanceFilter
 import performSelection
 import weka.attributeSelection.*
 import weka.clusterers.ClusterEvaluation
-import weka.clusterers.EM
 import weka.clusterers.HierarchicalClusterer
 import weka.clusterers.SimpleKMeans
 import weka.filters.Filter
 import weka.filters.unsupervised.attribute.Normalize
 import weka.filters.unsupervised.attribute.Remove
+import java.nio.channels.FileChannel
 import java.nio.file.Paths
 import java.util.*
 import java.util.function.Predicate
 
 private val random = Random(11121993)
+//private val random = Random()
 
 fun main() {
-    println("Loading data")
-    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-average-graph.arff")
+    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-static.arff")
     var data = ArffUtil.load(dataPath)
     val ids = data.map { it.stringValue(0) }
     val classes = data.map { it.stringValue(it.classIndex()) }
+
+    println("\t${data.numAttributes()} attributes")
 
     println("Splitting data into test & train")
     var train = InstanceFilter.filter(data, Predicate { random.nextBoolean() })
@@ -57,22 +59,22 @@ fun main() {
     train = infoSelection.reduceDimensionality(train)
     test = infoSelection.reduceDimensionality(test)
 
-//    println("Performing Cfs")
-//    val cfsEval = performSelection(
-//        train,
-//        CfsSubsetEval(),
-//        GreedyStepwise().apply {
-//            numExecutionSlots = 12
-//            searchBackwards = true
-//            threshold = 0.0
-//        }
-//    )
-//
-//    println("\tRetained ${cfsEval.numberAttributesSelected()} features")
-//
-//    data = cfsEval.reduceDimensionality(data)
-//    train = cfsEval.reduceDimensionality(train)
-//    test = cfsEval.reduceDimensionality(test)
+    println("Performing Cfs")
+    val cfsEval = performSelection(
+        train,
+        CfsSubsetEval(),
+        GreedyStepwise().apply {
+            numExecutionSlots = 12
+            searchBackwards = true
+            threshold = 0.0
+        }
+    )
+
+    println("\tRetained ${cfsEval.numberAttributesSelected()} features")
+
+    data = cfsEval.reduceDimensionality(data)
+    train = cfsEval.reduceDimensionality(train)
+    test = cfsEval.reduceDimensionality(test)
 
     println("Removing id and class attributes")
     if (train.attribute("id") != null) {
@@ -104,22 +106,6 @@ fun main() {
     data.setClassIndex(-1)
     train.setClassIndex(-1)
     test.setClassIndex(-1)
-
-    println("Performing PCA")
-    val pcaSelection = performSelection(
-        train,
-        PrincipalComponents().apply {
-            centerData = true
-            maximumAttributeNames = -1
-        },
-        Ranker().apply {
-            threshold = 0.0
-        }
-    )
-
-    data = pcaSelection.reduceDimensionality(data)
-    train = pcaSelection.reduceDimensionality(train)
-    test = pcaSelection.reduceDimensionality(test)
 
     println("Performing clustering")
 //    val clusterer = SimpleKMeans()

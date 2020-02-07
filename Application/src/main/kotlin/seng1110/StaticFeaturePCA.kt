@@ -19,7 +19,7 @@ private val random = Random(11121993)
 
 fun main() {
     println("Loading data")
-    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-average-graph.arff")
+    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-static.arff")
     var data = ArffUtil.load(dataPath)
     val ids = data.map { it.stringValue(0) }
     val classes = data.map { it.stringValue(it.classIndex()) }

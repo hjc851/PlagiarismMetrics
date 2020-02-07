@@ -19,6 +19,8 @@ dependencies {
     compile group: 'nz.ac.waikato.cms.weka', name: 'chiSquaredAttributeEval', version: '1.0.4'
     compile group: 'nz.ac.waikato.cms.weka', name: 'optics_dbScan', version: '1.0.6'
 
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+
     compile project(":CK")
     compile project(":Extractor")
     compile project(":Features")
