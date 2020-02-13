@@ -4,7 +4,10 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 fun main() {
-    val scores = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/comparisonresults.txt")
+//    val scores = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/comparisonresults.txt")
+//    val scores = Paths.get("/home/haydencheers/Desktop/COMP2240_A1_2018_Seeded/results-dynamic.txt")
+    val scores = Paths.get("/home/haydencheers/Desktop/SENG2050 Datasets/SENG2050_A1_2017-results-dynamic.txt")
+
     val reader = Files.newBufferedReader(scores)
     val similarityScores = mutableListOf<SimilarityScore>()
 
@@ -31,7 +34,7 @@ fun main() {
     reader.close()
 
     val nonVariantScores = similarityScores.filter { !nameIsVariant(it.lhs) && !nameIsVariant(it.rhs) }
-    val similarityThreshold = findClusterThreshold(nonVariantScores, 6)
+    val similarityThreshold = findClusterThreshold(nonVariantScores, 6, 0.001)
     val notInLargestCluster = similarityScores.filter { it.score > similarityThreshold }
         .sortedByDescending { it.score }
 
@@ -47,6 +50,6 @@ fun main() {
 
     val variantComparisons = notInLargestCluster.filter { isBaseOrVariantComparison(it) }
     val nonVariantComparisons = notInLargestCluster.filter { !isBaseOrVariantComparison(it) }
-    println("Threshold ${similarityThreshold}")
+    println("Threshold ${similarityThreshold*100}")
     println("${variantComparisons.size} of ${notInLargestCluster.size} are correct")
 }

@@ -20,7 +20,8 @@ private val random = Random(11121993)
 
 fun main() {
     println("Loading data")
-    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-average-graph.arff")
+//    val dataPath = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/features-average-graph.arff")
+    val dataPath = Paths.get("/home/haydencheers/Desktop/COMP2240_A1_2018_Seeded/features-dynamic.arff")
     var data = ArffUtil.load(dataPath)
     val ids = data.map { it.stringValue(0) }
     val classes = data.map { it.stringValue(it.classIndex()) }
@@ -113,7 +114,7 @@ fun main() {
     val clusterer = HierarchicalClusterer()
 //    val clusterer = EM()
 
-    clusterer.numClusters = data.numInstances()-15
+    clusterer.numClusters = data.numInstances()-(6*4)
     clusterer.buildClusterer(data)
 
 //    clusterer.numClusters = test.numInstances()

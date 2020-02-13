@@ -8,7 +8,7 @@ data class SimilarityScore(val lhs: String, val rhs: String, val score: Double):
     override fun getPoint(): DoubleArray = doubleArrayOf(score)
 }
 
-fun findClusterThreshold(similarityScores: List<SimilarityScore>, densityFactor: Int): Double {
+fun findClusterThreshold(similarityScores: List<SimilarityScore>, densityFactor: Int, epsFactor: Double): Double {
     val scoreValues = similarityScores.map { it.score }.toDoubleArray()
 
     val stddev = scoreValues.stddev() ?: 0.0
@@ -20,7 +20,7 @@ fun findClusterThreshold(similarityScores: List<SimilarityScore>, densityFactor:
 
     val scoresInBound = scoreValues.filter { it in bound }
 
-    val eps = stddev
+    val eps = stddev/epsFactor
     val minpts = scoresInBound.count().toDouble().div(densityFactor).roundToInt()
 
     val clusterer = DBSCANClusterer<SimilarityScore>(eps, minpts)
@@ -44,7 +44,13 @@ fun nameIsVariant(name: String): Boolean {
 val bases = listOf (
     "SENG1110_A1_2017_9AD9DC8455122FA85F3651055CFCE036",
     "SENG1110_A1_2017_EF11C90DE680328951F7216E98733249",
-    "SENG1110_A1_2017_0BD88A4C124FF464E8BCCDC40A8DD0F9"
+    "SENG1110_A1_2017_0BD88A4C124FF464E8BCCDC40A8DD0F9",
+
+    // COMP2240 A1 2018
+    "5A33055622123E0D93BBC5230A6A1DE1",
+    "35B2800452D2C25F3D9963348F89FBFA",
+    "71FAE483E882AD098C34D7A7BF40C558",
+    "488A13A8EE510A363523FBAC0D55210E"
 )
 
 fun isBaseOrVariantComparison(score: SimilarityScore): Boolean {

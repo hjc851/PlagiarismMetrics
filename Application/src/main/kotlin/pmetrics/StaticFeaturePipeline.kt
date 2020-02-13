@@ -19,10 +19,10 @@ import kotlin.streams.toList
 
 fun main(args: Array<String>) {
     val root = Paths.get(args[0])
-    val libs = args[1].split(";")
+    val file = Paths.get(args[1])
+    val libs = args[2].split(";")
         .map { Paths.get(it) }
 
-    val file = root.resolve("features-static.arff")
     Files.deleteIfExists(file)
     Files.createFile(file)
 

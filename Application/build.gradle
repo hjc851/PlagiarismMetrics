@@ -21,6 +21,8 @@ dependencies {
 
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 
+    compile group: 'com.object-refinery', name: 'orsoncharts', version: '1.7'
+
     compile project(":CK")
     compile project(":Extractor")
     compile project(":Features")

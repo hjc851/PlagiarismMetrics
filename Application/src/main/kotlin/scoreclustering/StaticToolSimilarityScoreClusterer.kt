@@ -6,7 +6,10 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 fun main() {
-    val scores = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/seng1110-seeded-jplag.txt")
+//    val scores = Paths.get("/home/haydencheers/Desktop/SENG1110A12017_Seeded/seng1110-seeded-jplag.txt")
+//    val scores = Paths.get("/home/haydencheers/Desktop/COMP2240_A1_2018_Seeded/results-sim.txt")
+    val scores = Paths.get("/home/haydencheers/Desktop/SENG2050 Datasets/SENG2050_A1_2017-results-jplag.txt")
+
     val reader = Files.newBufferedReader(scores)
 
     val similarityScores = reader.lines()
@@ -15,7 +18,7 @@ fun main() {
         .use { it.toList() }
 
     val nonVariantScores = similarityScores.filter { !nameIsVariant(it.lhs) && !nameIsVariant(it.rhs) }
-    val similarityThreshold = findClusterThreshold(nonVariantScores, 4)
+    val similarityThreshold = findClusterThreshold(nonVariantScores, 6, 1.0)
     val notInLargestCluster = similarityScores.filter { it.score > similarityThreshold }
         .sortedByDescending { it.score }
 
